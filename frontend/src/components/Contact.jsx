@@ -13,7 +13,7 @@ export default function Contact() {
     try {
       if (state !== "init") return;
       setState("sending");
-      const res = await fetch(`${import.meta.env.PUBLIC_BACKEND}/contact`, {
+      const res = await fetch(`https://backend.remcokersten.nl/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

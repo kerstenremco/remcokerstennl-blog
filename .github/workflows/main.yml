@@ -27,7 +27,7 @@ jobs:
       - name: Start TinaCMS
         working-directory: ./frontend
         run: npm run tina &
-      - name: Sleep for 20 seconds so TinaCMS can start
+      - name: Sleep for 10 seconds so TinaCMS can start
         uses: jakejarvis/wait-action@master
         with:
           time: "10s"

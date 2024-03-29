@@ -5,7 +5,11 @@ export default function Like({ slug }) {
   const [likesInLocalStorage, setLikesInLocalStorage] = useState(undefined);
 
   useEffect(() => {
-    setLikesInLocalStorage(localStorage.getItem("likes") ? JSON.parse(localStorage.getItem("likes")) : []);
+    setLikesInLocalStorage(
+      localStorage.getItem("likes")
+        ? JSON.parse(localStorage.getItem("likes"))
+        : []
+    );
   }, []);
 
   useEffect(() => {
@@ -19,7 +23,7 @@ export default function Like({ slug }) {
   useEffect(() => {
     (async () => {
       const response = await fetch(
-        `${import.meta.env.PUBLIC_BACKEND}/likes/${encodeURIComponent(slug)}`.toLocaleLowerCase(),
+        `https://backend.remcokersten.nl/api/likes/${encodeURIComponent(slug)}`.toLocaleLowerCase()
       );
       const likes = (await response.json()).likes;
       setLikes(likes);
@@ -28,9 +32,12 @@ export default function Like({ slug }) {
 
   const handleClick = async () => {
     if (liked) return;
-    const res = await fetch(`${import.meta.env.PUBLIC_BACKEND}/likes/${encodeURIComponent(slug)}`.toLowerCase(), {
-      method: "PATCH",
-    });
+    const res = await fetch(
+      `https://backend.remcokersten.nl/api/likes/${encodeURIComponent(slug)}`.toLowerCase(),
+      {
+        method: "PATCH",
+      }
+    );
     const likes = (await res.json()).likes;
     if (!likes) return;
     setLikes(likes);
@@ -43,7 +50,11 @@ export default function Like({ slug }) {
       {likes === undefined && <span class="loading loading-spinner"></span>}
       {likes !== undefined && (
         <>
-          <box-icon name="heart" class="fill-red-500" type={liked ? "solid" : ""}></box-icon>
+          <box-icon
+            name="heart"
+            class="fill-red-500"
+            type={liked ? "solid" : ""}
+          ></box-icon>
           {likes} likes
         </>
       )}
