@@ -1,3 +1,11 @@
+resource "aws_cloudfront_function" "redirect_old_to_new_blog" {
+  name    = "redirect_old_to_new_blog"
+  runtime = "cloudfront-js-2.0"
+  comment = "Redirect old urls"
+  publish = true
+  code    = file("${path.module}/redirect.js")
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket_website_configuration.s3bucketstatic.website_endpoint
@@ -33,6 +41,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+     function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirect_old_to_new_blog.arn
+    }
   }
 
   price_class = "PriceClass_100"
@@ -55,4 +67,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     acm_certificate_arn = "arn:aws:acm:us-east-1:690695544845:certificate/fb366498-e042-4f73-a36a-c7f5ce252225"
     ssl_support_method = "sni-only"
   }
+
+ 
 }
