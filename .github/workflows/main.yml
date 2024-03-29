@@ -26,7 +26,11 @@ jobs:
         run: npm install
       - name: Start TinaCMS
         working-directory: ./frontend
-        run: npm run tina
+        run: npm run tina &
+      - name: Sleep for 20 seconds so TinaCMS can start
+        uses: jakejarvis/wait-action@master
+        with:
+          time: "10s"
       - name: Compile
         working-directory: ./frontend
         run: npm run build
