@@ -1,0 +1,100 @@
+---
+import Base from "../../layout/base.astro";
+import { Header1, Header2, Header3, Link } from "../../components/styles/typo";
+import { List, Image, Alert } from "../../components/styles";
+import { Code, CodeBlock, Like, Stepper } from "../../components";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
+import getPosts from "../../helpers/getPosts";
+import "highlight.js/styles/github-dark-dimmed.css";
+const components = {
+  h1: Header1,
+  h2: Header2,
+  h3: Header3,
+  a: Link,
+  ol: List,
+  ul: List,
+  Alert: Alert,
+  img: Image,
+  code_block: CodeBlock,
+  code: Code,
+};
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts?.map((p) => {
+    return {
+      params: { slug: p.slug },
+      props: { ...p },
+    };
+  });
+}
+const h2headers = Astro.props.body.children.filter((el) => el.type === "h2").map((el) => el.children[0].text);
+---
+
+<Base title=`Remco Kersten - ${Astro.props.title}` seoDesc={Astro.props.snippet} seoKeywords={Astro.props.seoKeyWords} image={Astro.props.image}>
+  <div class="xl:flex xl:flex-row xl:gap-12">
+    <div class="xl:basis-1/4 xl:flex-none max-xl:sticky max-xl:top-0 z-50">
+      <Stepper headers={h2headers} />
+    </div>
+    <div class="px-4 xl:flex-1 xl:min-w-0">
+      <Header1 extraClasses="text-center my-2">{Astro.props.title}</Header1>
+      <p class="text-center text-primary mb-7">{Astro.props.subtitle}</p>
+      <div class="flex gap-4 content-center">
+        <Like slug={Astro.props.slug} client:load />
+        <div class="font-light italic mb-4">
+          Written on {new Date(Astro.props.written).toISOString().split("T")[0]}<br />
+          Written by Remco Kersten
+        </div>
+      </div>
+      <TinaMarkdown content={Astro.props.body} components={components} />
+    </div>
+  </div>
+</Base>
+<!-- HIGHLIGHTJS -->
+<!-- Import HighlightJS at buildtime, and execute at runtime -->
+<script>
+  import hljs from "highlight.js/lib/core";
+  import javascript from "highlight.js/lib/languages/javascript";
+  import shell from "highlight.js/lib/languages/shell";
+  import yaml from "highlight.js/lib/languages/yaml";
+  hljs.registerLanguage("javascript", javascript);
+  hljs.registerLanguage("shell", shell);
+  hljs.registerLanguage("yaml", yaml);
+  document.addEventListener("DOMContentLoaded", (event) => {
+    hljs.highlightAll();
+  });
+</script>
+<script is:inline>
+    const tags = document.getElementsByClassName("step");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const slug = entry.target.innerHTML;
+        const index = Array.from(tags).findIndex((el) => el.innerHTML === slug);
+        Array.from(tags).forEach((el, i) =>
+          i <= index ? el.classList.add("step-primary") : el.classList.remove("step-primary")
+        );
+      });
+    });
+    // Track headers
+    document.querySelectorAll("h2,h3,h4,h5,h6").forEach((section) => {
+      observer.observe(section);
+    });
+</script>
+<!-- HIGHLIGHTJS -->
+<!-- FSLIGHTBOX -->
+<!-- Import FSLightbox at buildtime, and bind listners at runtime -->
+<script>
+  import "fslightbox";
+</script>
+<script is:inline>
+    document.querySelectorAll("img").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        const lightbox = new FsLightbox();
+        lightbox.props.disableBackgroundClose = true;
+        lightbox.props.type = "image";
+        lightbox.props.sources = [e.target.getAttribute("src")];
+        lightbox.open();
+      });
+    });
+</script>
+<!-- FSLIGHTBOX -->

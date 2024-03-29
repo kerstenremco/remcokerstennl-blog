@@ -1,0 +1,34 @@
+---
+import Base from "../layout/base.astro";
+import Image from "astro/components/Image.astro";
+import { Header1, Header2 } from "../components/styles/typo";
+import {CardExtended} from "../components";
+import getPosts from "../helpers/getPosts";
+const posts = await getPosts();
+---
+
+<Base title="Remco Kersten">
+	<div class="flex flex-col items-center gap-8 xl:flex-row xl:gap-56">
+		<div>
+			<Header1 extraClasses="text-center xl:text-left"
+				>Hi, I'm Remco Kersten 👋</Header1
+			>
+			<p>
+				Welcome to my digital garden! With my interest in IT, especially networking, security and DevOps, I like to keep discovering new things. I find a lot of information on the internet from documentation and blogs by other engineers. To give something back to this great community, I also write blogs about something that interests me and want to share.
+			</p>
+		</div>
+		<Image
+			class="mask mask-squircle"
+			src="/rawimages/remco.png"
+			alt="s"
+			width={400}
+			height={400}
+		/>
+	</div>
+	<Header2 extraClasses="text-center mt-24">Recents posts</Header2>
+	<div class="flex flex-col gap-10">
+		{posts?.map((post) => (
+			<CardExtended {...post} />
+		  ))}
+	</div>
+</Base>

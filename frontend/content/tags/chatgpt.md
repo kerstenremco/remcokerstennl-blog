@@ -1,0 +1,5 @@
+---
+title: ChatGPT
+color: success
+---
+

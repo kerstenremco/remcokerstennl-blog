@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  remcokersten-backend
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'POST, GET, PATCH'"
+        AllowHeaders: "'X-Forwarded-For, Content-Type'"
+        AllowOrigin: "'*'"
+      Domain:
+        DomainName: backend.remcokersten.nl
+        CertificateArn: arn:aws:acm:eu-central-1:690695544845:certificate/6df6c8ec-edd7-4a5b-81c1-394f603efe12
+        EndpointConfiguration: REGIONAL
+        BasePath:
+          - api
+  likesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/likes.index
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 10
+      Description: Get and put likes to posts
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref remcokersten
+      Environment:
+        Variables:
+          databaseName: !Ref remcokersten
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /likes/{slug}
+            Method: GET
+            RestApiId:
+              Ref: ApiGatewayApi
+        Patch:
+          Type: Api
+          Properties:
+            Path: /likes/{slug}
+            Method: PATCH
+            RestApiId:
+              Ref: ApiGatewayApi
+  contactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/contact.index
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 10
+      Description: Contact handler
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: "*"
+        - Statement:
+            - Sid: SSMParameters
+              Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: "*"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /contact/
+            Method: POST
+            RestApiId:
+              Ref: ApiGatewayApi
+  remcokersten:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String

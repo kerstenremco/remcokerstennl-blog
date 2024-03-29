@@ -1,0 +1,5 @@
+---
+title: FortiGate
+color: error
+---
+

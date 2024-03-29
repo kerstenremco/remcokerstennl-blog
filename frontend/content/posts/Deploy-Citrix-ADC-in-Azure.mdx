@@ -1,0 +1,90 @@
+---
+title: Deploy Citrix ADC in Azure
+subtitle: A small how to post on how to easily deploy Citrix ADC in Azure
+customslug: deploy-citrix-adc-in-azure
+snippet: >-
+  This post provides a step-by-step plan on how to easily deploy Citrix ADC
+  (Netscaler) in Azure
+image: /images/post-images/adc-azure/citrix.jpeg
+written: 2023-04-25T22:00:00.000Z
+seo_keywords: 'Citrix, ADC, Netscaler, Cloud, Azure, Deploy'
+tags:
+  - tag: content/tags/citrixadc.md
+---
+
+## Steps for deploying Citrix ADC
+
+Citrix ADC (formerly Netscaler) is also available as a virtual appliance in addition to physical hardware. As a result, companies can make Citirx ADC available virtually and are no longer bound to purchase special equipment. ADC has recently also been available in the Azure marketplace, making it extremely easy to deploy Citrix ADC (aka. Netscaler) in your Azure infrastructure.
+
+In the step-by-step plan below, I give a demonstration in which Citrix ADC is deployed on Azure for the concept below.
+
+![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-1.png)
+
+### Step 1: Create Citrix ADC VM
+
+Search the Azure marketplace for **Citrix ADC 13.1** and choose a variant of your choice and deploy this VM. *(VPX Express 20 Mbps is free to use at the time of writing).*
+
+![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-2.png)
+
+* In this example, I choose **Password** as Authentication type instead of SSH public key so that I no longer have to configure a separate user after deployment.
+
+<Alert text="Obviously this is not best practice for production environments" type="warning" />
+
+* Set public inbound ports to **None** so that your ADC is not accessible to everyone
+* Leave the rest of the options, or adjust them as desired.
+
+After deployment, create an inbound rule under the **Network security group** that allows traffic from your IP address.
+
+![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-3.png)
+
+### Step 2: Configure network
+
+The ADC needs 3 IP addresses:
+
+* 1 address for management interface
+* 1 address for the internal network
+* 1 address for public access
+
+#### Add second subnet
+
+Go to the virtual network that the ADC is part of, and create an extra subnet for the internal network.
+In this example I am creating the subnet **10.0.10.0/24**
+
+\*\*\*\*![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-4.png)
+
+#### Add second network interface
+
+The ADC currently has 1 interface for public access, so we have to create another interface for the internal network.
+
+* Go to **Network interfaces** and click **Create**\
+  ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-5.png)
+* Create an interface in the internal subnet. Give the interface a **static** IP address\
+  ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-6.png)
+* Assign the network card to the ADC VM.
+  ⚠️ *The VM must be turned off*
+
+#### Add IP configuration for public access
+
+For the public network card there is currently 1 IP configuration which is used for management interface.
+That's why we add an extra IP configuration for public access.
+
+* Open the network interface of the public network\
+  ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-8.png)
+* Under **IP configurations** add a new IP configuration with both a private and public static IP address
+  ⚠️ *The public IP address must be SKU **standard***\
+  ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-9.png)
+
+#### Configure IP settings on ADC
+
+* **Reboot** the VM and login to Citrix ADC by navigating to *https\://\<management-ip>/*
+* Log in with the data you created when creating the VM
+* Under Configuration, go to **System -> Network -> Interfaces**
+  You should see the 2 network cards that we just created here.
+* Go to **System -> Network -> IPs** and add the newly created IP address for the internal network. IP Type is **Subnet IP**
+* Add the private ip address for the **public network card** in the same way. IP Type here is **Virtual IP**
+
+  ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-10.png)
+
+## Conclusion
+
+In this post I showed how to deploy Citrix ADC (aka. Netscaler) on Azure. It is now possible to offer your services hosted on Azure via Citrix ADC.

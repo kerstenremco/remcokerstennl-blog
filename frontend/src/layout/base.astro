@@ -1,0 +1,77 @@
+---
+import { NavBar, Contact } from "../components";
+---
+
+<html lang="en" data-theme="dracula">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="English" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta property="og:title" content={Astro.props.title} />
+    <meta name="title" content={Astro.props.title} />
+    {Astro.props.seoDesc && <meta name="description" content={Astro.props.seoDesc} />}
+    {Astro.props.seoKeywords && <meta name="keywords" content={Astro.props.seoKeywords} />}
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Remco Kersten" />
+	{Astro.props.image && <meta property="og:image" content={Astro.props.image} />}
+	{Astro.props.image && <meta property="og:image:type" content="image/png" />}
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>{Astro.props.title}</title>
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        const theme = localStorage.getItem("theme");
+        if (theme === null) {
+          document.documentElement.setAttribute("data-theme", "dracula");
+        } else {
+          document.documentElement.setAttribute("data-theme", theme);
+          if (theme === "emerald") document.getElementById("theme-switch").checked = true;
+        }
+      });
+    </script>
+    <script>
+      import { themeChange } from "theme-change";
+      themeChange();
+    </script>
+  </head>
+  <body class="xl:max-w-screen-xl mx-auto mb-24 px-4">
+    <NavBar client:load />
+    <Contact client:load />
+    <div class="xl:mt-20">
+      <slot />
+    </div>
+  </body>
+</html>
+<style is:global>
+  html {
+    font-family: "DM Sans", sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Urbanist", sans-serif;
+  }
+  .hljs {
+    background: none !important;
+  }
+  pre code.hljs {
+    display: inline !important;
+    padding: 0 !important;
+  }
+  li > div {
+    display: inline;
+  }
+</style>
+<script>
+  import box from "boxicons/dist/boxicons.js";
+</script>

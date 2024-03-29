@@ -1,0 +1,11 @@
+{
+  "name": "remcokersten-backend",
+  "description": "Backend API for remcokersten.nl",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.489.0",
+    "@aws-sdk/lib-dynamodb": "^3.489.0"
+  },
+  "scripts": {}
+}

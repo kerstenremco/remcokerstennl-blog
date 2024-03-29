@@ -1,0 +1,16 @@
+---
+import Base from "../../layout/base.astro";
+import { Header1 } from "../../components/styles/typo";
+import {PostsFilter} from "../../components/";
+import getPosts from "../../helpers/getPosts";
+import getTags from "../../helpers/getTags";
+const tags = await getTags();
+const posts = await getPosts();
+---
+
+<Base title="Remco Kersten - All posts">
+	<Header1 extraClasses="text-center md:mt-24">All posts</Header1>
+	<div class="flex flex-col gap-10">
+		<PostsFilter client:load tags={tags} posts={posts} />
+	</div>
+</Base>

@@ -1,0 +1,198 @@
+---
+title: DNS debugging
+subtitle: A simple real-life example about DNS debugging
+customslug: dns-debugging
+snippet: >-
+  Learn how to troubleshoot DNS issues after and avoid downtime for your
+  website. Follow the easy steps to debug the DNS hierarchy!
+image: /images/post-images/dns-debugging/serverroom.jpeg
+written: 2022-10-19T22:00:00.000Z
+seo_keywords: >-
+  DNS server, DNS, Azure DNS, DNS hierarchy, Verisign DNSSEC analyzer,
+  Nameservers, DNS zone, nslookup, Debugging DNS, DNS proces
+tags:
+  - tag: content/tags/dns.md
+---
+
+Recently I switched DNS server for the domain remcokersten.nl. Due to a small mistake on my side, my domain was offline for a few hours. This was not a disaster (unless an African prince has tried to email me in the meantime to do business with me).
+
+Although I knew right away what I had done wrong, I thought it was a good time to debug the DNS hierarchy to find out what went wrong at that moment.
+
+## Switch DNS server
+
+I was completely satisfied with Azure DNS, which makes it very easy to manage your DNS zone through both the portal and various APIs.
+But when I recently checked my domain in[ Verisign's DNSSEC analyzer](https://dnssec-debugger.verisignlabs.com/), I saw that there was no secure delegation from the .nl zone to my domain zone.
+
+![](/images/post-images/dns-debugging/dns-debugging-1.png)
+
+At the time of writing, Azure doesn't not yet supports [DNSSEC](https://learn.microsoft.com/en-us/azure/dns/dns-faq#does-azure-dns-support-dnssec-).
+Not a big deal for my little blog. But there was no specific reason that I used Azure DNS, so I decided to place my DNS records with the hosting provider where I also registered my domain name, namely [Antagonist](https://www.antagonist.nl/).
+
+After I had entered all my DNS records properly at Antagonist, I adjusted my nameservers from the Azure nameservers to the Antagonist nameservers. After that, all I had to do was delete the DNS zone in Azure, and that's what I did.
+
+Spoiler alert: and that’s where it went wrong! Although almost all DNS servers on the internet still referred to the Azure name servers to request information about my domain, I had already removed my DNS zone. Bye website, bye mail, see you in a few hours.
+
+In case you’re not quite familiar with how the DNS hierarchy works, Blake Khan wrote an interesting [article](https://dev.to/blake/dns-explained-introduction-history-1an7) on dev.to.
+
+## The debugging process
+
+Now that the website is offline, how can you check what exactly is going wrong?
+In the steps below I show how I used the nslookup tool to find out where the "error" was in the DNS process.
+
+The DNS process should look like this:
+
+1. My computer sends the DNS query to the configured DNS server (in my case the DNS resolver of my ISP)
+2. The DNS resolver requests a Root Level name server
+3. The Root Level name server redirects to the TLD name servers of the .nl domain
+4. The DNS resolver requests one of the TLD name servers
+5. The TLD name server redirects to the name servers that manage my domain (in this case Antagonist’s name servers)
+6. The DNS resolver requests one of Antagonist’s name servers
+7. Antagonist’s name server answers
+8. The DNS resolver now has a response and sends it back to my computer
+
+![](/images/post-images/dns-debugging/dns-debugging-2.png)
+
+### Step 1: Can my computer find my domain?
+
+With `nslookup` you can look up a domain name. By default, the DNS server which is set under the network configuration gets used. In my case this is my router with IP address 192.168.2.254, which in turn uses my ISP’s DNS server.
+
+```shell
+nslookup remcokersten.nl
+;; Got SERVFAIL reply, trying next server
+Server:		192.168.2.254
+Address:	192.168.2.254#53
+
+** server can't find remcokersten.nl: SERVFAIL
+```
+
+Okay, so we see that the DNS server, or the DNS resolver, of my ISP cannot find the domain name. Let’s see where in the DNS process this goes wrong.
+
+### Step 2: Can the root DNS servers do anything with this query?
+
+nslookup accepts as 2nd argument a DNS server to send the query directly to. According to the DNS process, my ISP’s DNS server will have to send the request to one of the [root DNS servers](https://www.iana.org/domains/root/servers). Let’s do this with the nslookup tool. I also use the `-debug` option to get a little more information about the response from the DNS server.
+
+```shell
+nslookup -debug remcokersten.nl a.root-servers.net
+Server:		a.root-servers.net
+Server:		a.root-servers.net
+Address:	2001:503:ba3e::2:30#53
+------------
+    QUESTIONS:
+.remcokersten.nl, type = A, class = IN
+    ANSWERS:
+    AUTHORITY RECORDS:
+    ->  nl
+.nameserver = ns1.dns.nl.
+.ttl = 172800
+    ->  nl
+.nameserver = ns2.dns.nl.
+.ttl = 172800
+    ->  nl
+.nameserver = ns3.dns.nl.
+.ttl = 172800
+    ->  nl
+.nameserver = ns4.dns.nl.
+.ttl = 172800
+```
+
+In the above response we see that the DNS root server indicates that we should ask one of the DNS servers of the .nl domain. This is normal. The root servers only keep track of which DNS servers are responsible for which top-level domains.
+
+So far nothing has gone wrong in the DNS process.
+
+### Step 3: Can the .nl DNS servers do something with this query?
+
+As we saw in step 2, we need to query the .nl DNS servers.
+
+```shell
+nslookup -debug www.remcokersten.nl ns1.dns.nl
+Server:		ns1.dns.nl
+Address:	2001:678:2c:0:194:0:28:53#53
+
+------------
+    QUESTIONS:
+.www.remcokersten.nl, type = A, class = IN
+    ANSWERS:
+    AUTHORITY RECORDS:
+    ->  remcokersten.nl
+.nameserver = ns1-06.azure-dns.com.
+.ttl = 3600
+    ->  remcokersten.nl
+.nameserver = ns2-06.azure-dns.net.
+.ttl = 3600
+    ->  remcokersten.nl
+.nameserver = ns3-06.azure-dns.org.
+.ttl = 3600
+    ADDITIONAL RECORDS:
+------------
+```
+
+This is where things go wrong. The .nl DNS servers still refer to the Azure DNS servers. But I have already removed the DNS zone within Azure. This means that Azure cannot answer this query:
+
+```shell
+nslookup -debug remcokersten.nl ns1-06.azure-dns.com
+Server:		ns1-06.azure-dns.com
+Address:	2603:1061:0:700::6#53
+
+------------
+    QUESTIONS:
+.remcokersten.nl, type = A, class = IN
+    ANSWERS:
+    AUTHORITY RECORDS:
+    ADDITIONAL RECORDS:
+------------
+** server can't find remcokersten.nl: REFUSED
+```
+
+### How to solve the DNS problem?
+
+By specifying the new DNS servers at the domain registrar where I registered my domain. The domain registry then ensures that the .nl DNS servers are updated.
+
+I had already done this, but it can take up to a few hours before this change is implemented due to cache. After a few hours of waiting I asked the .nl DNS servers again. This time I got a nice redirect to the correct DNS servers:
+
+```shell
+nslookup -debug remcokersten.nl ns1.dns.nl
+Server:		ns1.dns.nl
+Address:	2001:678:2c:0:194:0:28:53#53
+
+------------
+    QUESTIONS:
+.remcokersten.nl, type = A, class = IN
+    ANSWERS:
+    AUTHORITY RECORDS:
+    ->  remcokersten.nl
+.nameserver = ns1.p01.antagonist.nl.
+.ttl = 3600
+    ->  remcokersten.nl
+.nameserver = ns2.p01.antagonist.net.
+.ttl = 3600
+    ->  remcokersten.nl
+.nameserver = ns3.p01.antagonist.de.
+.ttl = 3600
+    ADDITIONAL RECORDS:
+------------
+```
+
+To finish debugging the entire DNS process, I’ll show you what I get when I ask Antagonist’s DNS servers:
+
+```shell
+nslookup -debug remcokersten.nl ns1.p01.antagonist.nl
+Server:		ns1.p01.antagonist.nl
+Address:	2a03:3c00:1337:1000::2#53
+
+------------
+    QUESTIONS:
+.remcokersten.nl, type = A, class = IN
+    ANSWERS:
+    ->  remcokersten.nl
+.internet address = 195.211.74.112
+.ttl = 3600
+    AUTHORITY RECORDS:
+    ADDITIONAL RECORDS:
+------------
+Name:	remcokersten.nl
+Address: 195.211.74.112
+```
+
+And that answer is correct! I get the IP address back from the web server where my website is located.
+
+(Technically not, because the server only provides an HTTP redirect to [www.remcokersten.nl](http://www.remcokersten.nl), but that’s another story)

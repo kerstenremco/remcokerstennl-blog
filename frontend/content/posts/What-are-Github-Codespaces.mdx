@@ -1,0 +1,101 @@
+---
+title: What are Github Codespaces
+subtitle: Let's take a look at Codespaces and how to create them
+customslug: what-are-github-codespaces
+snippet: >-
+  Codespaces, your own development environment in the cloud! Let's take a look
+  at Codespaces and how to create them
+image: /images/post-images/github-codespaces/github_codespaces.jpeg
+written: 2023-05-10T22:00:00.000Z
+modified: 2023-05-19T22:00:00.000Z
+seo_keywords: >-
+  Github, github Codespace, Codespace, Codespaces, VSCode, VSCode browser,
+  Container, Cloud
+tags:
+  - tag: content/tags/github.md
+---
+
+Have you ever come across the term "codespaces" on Github, but never bothered to find out exactly what it is? I wasn't familiar with it myself either, so I recently got to check it out. And honestly, I got pretty excited about it!
+
+## What are code spaces?
+
+You may recognize the problem: you are working on a project and you have completely tuned your computer to the requirements of that project. You've customized your VS Code environment with the right plugins, the necessary software (such as NodeJS), and installed a debugger, and so on.
+
+Working on your own computer is great, of course, but once you open your project on another device, it often takes a lot of time to configure it and get it up and running. Fortunately, this problem is virtually a thing of the past with Codespaces!
+
+A Codespace is a container in which you set up your own development environment, hosted on Github. You can access this environment from any computer, even via your browser. Yes, you read that right: VSCode in your browser!
+
+## Creating Github Codespace
+
+In this tutorial, I'll show you how to set up a Codespace for an Astro project (a static site generator) and deploy it to Azure Static Web Apps.
+
+To develop and deploy this project, we need three tools:
+• VS Code
+• NodeJS and NPM (for building the Astro website)
+• Azure CLI (for deploying the website to Azure)
+
+By default the is no Codespace available for new repositories. In this tutorial, we will go through the following steps together to create one.
+
+If you want to follow this tutorial yourself, you can use your own project on Github or fork the [repository of this example](https://github.com/kerstenremco/astro-website).
+
+* Open the repository for which you want to create a Codespace
+* Under the **Code** tab, go to the **Codespaces** tab and create a new Codespace here
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-1.png)
+
+Your Github Codespace will now open in a new tab. The default environment (image) you get contains VS Code and the most commonly used runtimes and tools, such as NodeJS, PHP, and Python. Ofcourse you can [customize a Codespace image](https://docs.github.com/en/codespaces/customizing-your-codespace).
+
+## Starting the local development server
+
+Now that the project is loaded, we can start the Astro project.
+
+<Alert text="Normally, the node modules still need to be installed after cloning a project. Github Codespaces automatically installs the dependencies when creating a Codespace. If this is not the case, you can still run npm install on the built-in CLI within VSCode." type="info" />
+
+* Run `npx astro dev --host` on the CLI to start Astro's local development server.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-2.png)
+
+Astro is now running and listening on port 3000. On your local machine, you should now go to localhost:3000, but of course, this is not possible now because this project is hosted in a container on Github.
+
+Under the **Ports** tab, you will find an overview of all applications running locally on your container, along with a URL to access your application.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-2.png)![](/images/post-images/github-codespaces/what-are-github-codespaces-3.png)
+
+## Deploying the website to Azure
+
+To deploy the website to Azure Static Web Apps, you need the [SWA CLI](https://azure.github.io/static-web-apps-cli/). You can simply install it in your Codespace.
+
+* Run `npm run build` to compile the Astro website. The static website will be placed in the Dist folder.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-5.png)
+
+* Install the SWA CLI globally with `npm install -g @azure/static-web-apps-cli`
+* Initialize an Azure SWA project by running `swa init` and following the steps.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-6.png)
+
+* Then, deploy the website to Azure SWA by running `swa deploy --no-use-keychain`.
+
+Your website is now deployed to Azure SWA!
+
+## Stopping and Starting Codespace
+
+Your Codespace is essentially your own "virtual development environment" and can be saved. To shut down your Codespace, go to the bottom left and select **Codespaces**, then **Stop Current Codespace**.
+
+When you go to **Codespaces** on Github, you will see all your Codespaces. Here you can also see how much storage space your Codespace occupies, how much CPU is allocated to your Codespace, and so on.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-7.png)
+
+<Alert text="As mentioned earlier, Codespaces are hosted containers running on the Github cloud. While the first few hours per month are currently free, it is advisable to learn more about the pricing." type="warning" />
+
+## Opening Codespace locally in VSCode
+
+If you prefer not to use the web version of VSCode, you can also open a Codespace in your own local version of VSCode by choosing the **Open in Visual Studio Code** option for the respective Codespace.
+
+This will open your project in the local version of VSCode, but you will still be working in your Codespace. The files you see in the explorer are located in the Codespace container, and the CLI is also linked to the Codespace container.
+
+![](/images/post-images/github-codespaces/what-are-github-codespaces-8.png)![](/images/post-images/hosting-agentgpt/hosting-agentgpt-on-linode-5.png)
+
+## Conclusion
+
+In this short tutorial, I showed you what Github Codespaces are and how to set them up. Codespaces are containers that host your files and tools and offer them as a development environment along with VSCode, which you can open on any computer.
