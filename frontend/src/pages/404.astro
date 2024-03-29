@@ -1,0 +1,18 @@
+---
+import Base from "../layout/base.astro";
+import Image from "astro/components/Image.astro";
+import { Header1 } from "../components/styles/typo";
+---
+
+<Base title="Remco Kersten - Page not found">
+	<div class="flex flex-col gap-10 items-center">
+        <Header1>Page not found 🙅🏽‍♂️</Header1>
+        <Image
+			class="mask mask-squircle"
+			src="/rawimages/404.png"
+			alt="Not found"
+			width={400}
+			height={400}
+		/>
+    </div>
+</Base>
