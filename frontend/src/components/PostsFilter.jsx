@@ -6,7 +6,12 @@ export default function PostsFilter({ tags, posts }) {
   const [visablePosts, setVisablePosts] = useState(posts);
   useEffect(() => {
     if (filter.length === 0) setVisablePosts(posts);
-    else setVisablePosts(posts.filter((post) => post.tags.some((tag) => filter.includes(tag.title))));
+    else
+      setVisablePosts(
+        posts.filter((post) =>
+          post.tags.some((tag) => filter.includes(tag.title))
+        )
+      );
   }, [filter]);
   const handleFilter = (tag) => {
     const filterIsActive = filter.includes(tag);
@@ -15,7 +20,7 @@ export default function PostsFilter({ tags, posts }) {
   };
   return (
     <>
-      <div className="flex gap-2 ">
+      <div className="flex flex-wrap gap-2 ">
         {tags.map((tag) => (
           <Tag
             tag={tag.title}
