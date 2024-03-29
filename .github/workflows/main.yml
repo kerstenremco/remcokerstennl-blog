@@ -37,7 +37,7 @@ jobs:
           delete-removed: true
           no-cache: true
       - name: Deploy to S3 productionbucket
-        if: if: github.event.inputs.env == 'prod'
+        if: github.event.inputs.env == 'prod'
         uses: reggionick/s3-deploy@v4
         with:
           folder: ./frontend/dist
