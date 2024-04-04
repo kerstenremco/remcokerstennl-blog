@@ -76,7 +76,7 @@ const h2headers = Astro.props.body.children.filter((el) => el.type === "h2").map
       });
     });
     // Track headers
-    document.querySelectorAll("h2,h3,h4,h5,h6").forEach((section) => {
+    document.querySelectorAll("h2").forEach((section) => {
       observer.observe(section);
     });
 </script>

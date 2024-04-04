@@ -17,7 +17,7 @@ tags:
 
 Have you ever come across the term "codespaces" on Github, but never bothered to find out exactly what it is? I wasn't familiar with it myself either, so I recently got to check it out. And honestly, I got pretty excited about it!
 
-## What are code spaces?
+## What are Codespaces?
 
 You may recognize the problem: you are working on a project and you have completely tuned your computer to the requirements of that project. You've customized your VS Code environment with the right plugins, the necessary software (such as NodeJS), and installed a debugger, and so on.
 
@@ -25,7 +25,9 @@ Working on your own computer is great, of course, but once you open your project
 
 A Codespace is a container in which you set up your own development environment, hosted on Github. You can access this environment from any computer, even via your browser. Yes, you read that right: VSCode in your browser!
 
-## Creating Github Codespace
+## Working with Github Codespaces
+
+### Creating Github Codespace
 
 In this tutorial, I'll show you how to set up a Codespace for an Astro project (a static site generator) and deploy it to Azure Static Web Apps.
 
@@ -45,7 +47,7 @@ If you want to follow this tutorial yourself, you can use your own project on Gi
 
 Your Github Codespace will now open in a new tab. The default environment (image) you get contains VS Code and the most commonly used runtimes and tools, such as NodeJS, PHP, and Python. Ofcourse you can [customize a Codespace image](https://docs.github.com/en/codespaces/customizing-your-codespace).
 
-## Starting the local development server
+### Starting the local development server
 
 Now that the project is loaded, we can start the Astro project.
 
@@ -61,7 +63,7 @@ Under the **Ports** tab, you will find an overview of all applications running l
 
 ![](/images/post-images/github-codespaces/what-are-github-codespaces-2.png)![](/images/post-images/github-codespaces/what-are-github-codespaces-3.png)
 
-## Deploying the website to Azure
+### Deploying the website to Azure
 
 To deploy the website to Azure Static Web Apps, you need the [SWA CLI](https://azure.github.io/static-web-apps-cli/). You can simply install it in your Codespace.
 
@@ -78,7 +80,7 @@ To deploy the website to Azure Static Web Apps, you need the [SWA CLI](https://a
 
 Your website is now deployed to Azure SWA!
 
-## Stopping and Starting Codespace
+### Stopping and Starting Codespace
 
 Your Codespace is essentially your own "virtual development environment" and can be saved. To shut down your Codespace, go to the bottom left and select **Codespaces**, then **Stop Current Codespace**.
 
@@ -88,7 +90,7 @@ When you go to **Codespaces** on Github, you will see all your Codespaces. Here 
 
 <Alert text="As mentioned earlier, Codespaces are hosted containers running on the Github cloud. While the first few hours per month are currently free, it is advisable to learn more about the pricing." type="warning" />
 
-## Opening Codespace locally in VSCode
+### Opening Codespace locally in VSCode
 
 If you prefer not to use the web version of VSCode, you can also open a Codespace in your own local version of VSCode by choosing the **Open in Visual Studio Code** option for the respective Codespace.
 
