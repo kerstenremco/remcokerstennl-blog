@@ -51,5 +51,5 @@ jobs:
           bucket: remcokerstennl
           bucket-region: eu-central-1
           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-          invalidation: /
+          invalidation: /*
           delete-removed: true

@@ -12,9 +12,13 @@ export default async function getPosts() {
       written: post?.node?.written,
       lastModified: post?.node?.modified,
       seoKeyWords: post?.node?.seo_keywords,
-      tags: post?.node?.tags?.map((t) => ({ title: t?.tag?.title, color: t?.tag?.color })),
+      tags: post?.node?.tags?.map((t) => ({
+        title: t?.tag?.title,
+        color: t?.tag?.color,
+      })),
       body: post?.node?.body,
     };
   });
+  posts?.sort((a, b) => (new Date(b.written!) > new Date(a.written!) ? 1 : -1));
   return posts;
 }
