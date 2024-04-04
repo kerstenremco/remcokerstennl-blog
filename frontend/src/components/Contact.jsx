@@ -53,6 +53,7 @@ export default function Contact() {
           <div className="*:my-2">
             <label class="input input-primary flex items-center gap-2">
               <box-icon name="envelope-open" class="fill-primary"></box-icon>
+
               <input
                 type="text"
                 class="grow"
@@ -75,7 +76,7 @@ export default function Contact() {
             </label>
 
             <textarea
-              className="textarea textarea-primary w-full"
+              className="textarea textarea-primary w-full text-base"
               placeholder="Message"
               onChange={(e) => setMessage(e.target.value)}
               value={message}
