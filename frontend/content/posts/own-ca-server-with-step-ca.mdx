@@ -72,7 +72,7 @@ Please enter the password to decrypt the provisioner key:
 *In this step I’ll create a certificate for fortigate.masterball.local and let the CA sign it by providing my generated token.*
 
 ```shell
-➜  ~step ca certificate--token $TOKEN fortigate.masterball.local fortigate.crt fortigate.key
+➜  ~step ca certificate --token $TOKEN fortigate.masterball.local fortigate.crt fortigate.key
 ✔ CA: https://step-ca.masterball.local:9000
 ✔ Certificate: fortigate.crt
 ✔ Private Key: fortigate.key
