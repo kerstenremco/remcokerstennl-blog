@@ -1,0 +1,57 @@
+---
+title: Export Trello cards to Microsoft Planner
+subtitle: Export Trello cards to Microsoft Planner with the help of Power Automate
+customslug: export-trello-cards-to-microsoft-planner
+snippet: >-
+  Migrating from Trello to Microsoft Planner? With this step-by-step guide you
+  can easily import your Trello cards into Microsoft Planner.
+image: /images/post-images/trello-to-planner/trello-to-planner.png
+written: 2024-08-09T22:00:00.000Z
+modified: 2024-08-09T22:00:00.000Z
+seo_keywords: >-
+  Trello, Microsoft Planner, Planner, Teams Planner, Migrate, Office365, Export
+  Trello, Import Planner, Power Automate
+tags:
+  - tag: content/tags/m365.md
+---
+
+Recently, it was decided to start using Microsoft Planner. A logical choice, as we are increasingly using Office365, and Microsoft Planner integrates well with other products like Teams. However, we had already been using Trello for over a year, and the number of cards had become countless. Therefore, manually transferring these cards was not an option, but unfortunately, there is no easy way to export cards from Trello and import them into Planner. After some clicking around in Teams, I came across Power Automate and saw a connector to Microsoft Planner. And you guessed it: I was able to build a flow to import the Trello cards.
+
+Below, I describe the steps I followed to migrate our cards. But every organization uses Trello differently, so adjust the flow to your own situation!
+
+## Export Trello Data
+
+First, log in to your Trello account and create a JSON export of your data. This can be done without a premium plan!![](/images/post-images/trello-to-planner/export.png)
+
+## Transform Data
+
+You'll receive a bulk of JSON data, most of those data is not relevant for Microsoft Planner. Load the exported JSON data into an editor tool like [jsoneditoronline.org](https://jsoneditoronline.org "jsoneditoronline.org"). Modify the file so that you're left with only an objects containing relevant data. I chose to keep only the fields title, description, and idList.
+
+![](/images/post-images/trello-to-planner/json.png)
+
+## Create a Power Automate Flow
+
+Now comes the fun part: Power Automate! Open Power Automate in your Teams channel or go to [make.powerautomate.com](https://make.powerautomate.com "make.powerautomate.com").
+Next, create the following Flow. I'll explain what happens in each element.
+
+![](/images/post-images/trello-to-planner/flow.png)
+
+* **Manually trigger a flow**: This option indicates that the flow must be started manually.
+* **JSON object Trello**: In this element, I define a variable named "json" with the filtered data from the previous step.\
+  ![](/images/post-images/trello-to-planner/SCR-20240810-lzrg.png)
+* **listIds**: The cards in Trello were in so-called lists. These lists have an ID (which you can find in the exported JSON data). Microsoft Planner also has lists with IDs, so create the lists in Planner beforehand! In this variable, I map the Trello list IDs to the Microsoft Planner List IDs.\
+  ![](/images/post-images/trello-to-planner/SCR-20240810-maol.png)
+* **Loop over Trello items**: A loop function that iterates over each object in the JSON variable.\
+  ![](/images/post-images/trello-to-planner/SCR-20240810-mbgo.png)
+* **Create task**: This function creates a task for each object in the loop. The fields in the JSON object are filled in the corresponding fields.
+
+  <Alert text="Note how I define the BuckedID! I get it from the list mapping created in the previous steps!" type="info" />
+
+  ![](/images/post-images/trello-to-planner/SCR-20240810-mhfq.png)
+* **Check if description**: Unfortunately, the Create task function cannot fill in the description. Therefore, I check if the current card contains the "desc" field. If so, I update the card that was created in the previous step with the description.\
+  ![](/images/post-images/trello-to-planner/SCR-20240810-mfct.png)\
+  ![](/images/post-images/trello-to-planner/SCR-20240810-mchq.png)
+
+## Conclusion
+
+And that's it! Now run your flow, and the cards will be neatly transferred to your Microsoft Planner environment.
