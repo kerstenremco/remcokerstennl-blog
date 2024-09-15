@@ -132,9 +132,8 @@ Now that the pod is running, we can proceed with copying the data.
 $ kubectl cp - n gitea./ gitea.tar.gz busybox: /data/
 ```
 
-### Extract the Tar File in the Pod
-
-* Next, we’ll open a shell in the busybox pod and extract the tar file:
+* Extract the Tar File in the Pod\
+  Next, we’ll open a shell in the busybox pod and extract the tar file:
 
 ```shell
 kubectl exec - n gitea--stdin--tty busybox-- / bin / sh

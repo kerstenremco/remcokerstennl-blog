@@ -34,8 +34,6 @@ Spoiler alert: and that’s where it went wrong! Although almost all DNS servers
 
 In case you’re not quite familiar with how the DNS hierarchy works, Blake Khan wrote an interesting [article](https://dev.to/blake/dns-explained-introduction-history-1an7) on dev.to.
 
-## The debugging process
-
 Now that the website is offline, how can you check what exactly is going wrong?
 In the steps below I show how I used the nslookup tool to find out where the "error" was in the DNS process.
 
@@ -52,7 +50,7 @@ The DNS process should look like this:
 
 ![](/images/post-images/dns-debugging/dns-debugging-2.png)
 
-### Step 1: Can my computer find my domain?
+## Step 1: Can my computer find my domain?
 
 With `nslookup` you can look up a domain name. By default, the DNS server which is set under the network configuration gets used. In my case this is my router with IP address 192.168.2.254, which in turn uses my ISP’s DNS server.
 
@@ -67,7 +65,7 @@ Address:	192.168.2.254#53
 
 Okay, so we see that the DNS server, or the DNS resolver, of my ISP cannot find the domain name. Let’s see where in the DNS process this goes wrong.
 
-### Step 2: Can the root DNS servers do anything with this query?
+## Step 2: Can the root DNS servers do anything with this query?
 
 nslookup accepts as 2nd argument a DNS server to send the query directly to. According to the DNS process, my ISP’s DNS server will have to send the request to one of the [root DNS servers](https://www.iana.org/domains/root/servers). Let’s do this with the nslookup tool. I also use the `-debug` option to get a little more information about the response from the DNS server.
 
@@ -99,7 +97,7 @@ In the above response we see that the DNS root server indicates that we should a
 
 So far nothing has gone wrong in the DNS process.
 
-### Step 3: Can the .nl DNS servers do something with this query?
+## Step 3: Can the .nl DNS servers do something with this query?
 
 As we saw in step 2, we need to query the .nl DNS servers.
 
@@ -143,7 +141,7 @@ Address:	2603:1061:0:700::6#53
 ** server can't find remcokersten.nl: REFUSED
 ```
 
-### How to solve the DNS problem?
+## Step 4: How to solve the DNS problem?
 
 By specifying the new DNS servers at the domain registrar where I registered my domain. The domain registry then ensures that the .nl DNS servers are updated.
 

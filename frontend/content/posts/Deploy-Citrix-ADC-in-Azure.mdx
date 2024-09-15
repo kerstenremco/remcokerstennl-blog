@@ -12,17 +12,15 @@ tags:
   - tag: content/tags/citrixadc.md
 ---
 
-## Steps for deploying Citrix ADC
-
 Citrix ADC (formerly Netscaler) is also available as a virtual appliance in addition to physical hardware. As a result, companies can make Citirx ADC available virtually and are no longer bound to purchase special equipment. ADC has recently also been available in the Azure marketplace, making it extremely easy to deploy Citrix ADC (aka. Netscaler) in your Azure infrastructure.
 
 In the step-by-step plan below, I give a demonstration in which Citrix ADC is deployed on Azure for the concept below.
 
 ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-1.png)
 
-### Step 1: Create Citrix ADC VM
+## Step 1: Create Citrix ADC VM
 
-Search the Azure marketplace for **Citrix ADC 13.1** and choose a variant of your choice and deploy this VM. *(VPX Express 20 Mbps is free to use at the time of writing).*
+* Search the Azure marketplace for **Citrix ADC 13.1** and choose a variant of your choice and deploy this VM. *(VPX Express 20 Mbps is free to use at the time of writing).*
 
 ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-2.png)
 
@@ -37,22 +35,20 @@ After deployment, create an inbound rule under the **Network security group** th
 
 ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-3.png)
 
-### Step 2: Configure network
+## Step 2: Configure network
 
-The ADC needs 3 IP addresses:
+* The ADC needs 3 IP addresses:
 
-* 1 address for management interface
-* 1 address for the internal network
-* 1 address for public access
+\- 1 address for management interface
 
-#### Add second subnet
+\- 1 address for the internal network
 
-Go to the virtual network that the ADC is part of, and create an extra subnet for the internal network.
-In this example I am creating the subnet **10.0.10.0/24**
+\- 1 address for public access
 
-\*\*\*\*![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-4.png)
+* Go to the virtual network that the ADC is part of, and create an extra subnet for the internal network.
+  In this example I am creating the subnet **10.0.10.0/24**
 
-#### Add second network interface
+![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-4.png)
 
 The ADC currently has 1 interface for public access, so we have to create another interface for the internal network.
 
@@ -61,9 +57,8 @@ The ADC currently has 1 interface for public access, so we have to create anothe
 * Create an interface in the internal subnet. Give the interface a **static** IP address\
   ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-6.png)
 * Assign the network card to the ADC VM.
-  ⚠️ *The VM must be turned off*
 
-#### Add IP configuration for public access
+⚠️ *The VM must be turned off*
 
 For the public network card there is currently 1 IP configuration which is used for management interface.
 That's why we add an extra IP configuration for public access.
@@ -74,7 +69,7 @@ That's why we add an extra IP configuration for public access.
   ⚠️ *The public IP address must be SKU **standard***\
   ![](/images/post-images/adc-azure/deploy-citrix-adc-in-azure-9.png)
 
-#### Configure IP settings on ADC
+## Step 3: Configure IP settings on ADC
 
 * **Reboot** the VM and login to Citrix ADC by navigating to *https\://\<management-ip>/*
 * Log in with the data you created when creating the VM

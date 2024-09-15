@@ -22,3 +22,9 @@ li > div {
 .alingleft {
   text-align: left !important;
 }
+.ul {
+  background: url("favicon-16x16.png") no-repeat left top;
+  /* height: 34px;
+  padding-top: 7px;
+  padding-left: 44px; */
+}

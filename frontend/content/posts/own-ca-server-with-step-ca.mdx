@@ -18,7 +18,7 @@ To make my home network safer, I added a FortiGate between my router and my home
 
 ![dewdew](/images/post-images/step-ca/cat-fortigate.png)
 
-## Installing step-ca
+## Step 1: Installing step-ca
 
 First, deploy step-ca as a Docker container with Portainer (which is a tool to manage Docker containers), but you can also do this directly using Docker or on different operating systems without using Docker.
 
@@ -38,7 +38,7 @@ Set the following environment variables:
   ![](/images/post-images/step-ca/step-ca-4.png)
 * Check if the server is running by going to `https://<step-ca-domain>:9000/health`
 
-## Installing step-cli
+## Step 2: Installing step-cli
 
 * Next, make sure you have [step-cli installed](https://smallstep.com/docs/step-cli/installation/) on your workstation.
   On MacOS, simply install it thought brew: `brew install step`
@@ -80,7 +80,7 @@ Please enter the password to decrypt the provisioner key:
 
 * Your certificate and key are now stored in your working directory. Keep them safe!
 
-## Add the certificate to FortiGate
+## Step 3: Add the certificate to FortiGate
 
 * The certificate file contains two certificates: the certificate for the FortiGate itself, and the intermediate certificate. We need to grap the intermediate certificate and import in before importing the FortiGate certificate.
   Open the **fortigate.crt** file and cut the last block into a separate file. Call this file something like **intermediate.crt**\
