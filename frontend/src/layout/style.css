@@ -1,0 +1,24 @@
+html {
+  font-family: "DM Sans", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Urbanist", sans-serif;
+}
+.hljs {
+  background: none !important;
+}
+pre code.hljs {
+  display: inline !important;
+  padding: 0 !important;
+}
+li > div {
+  display: inline;
+}
+.alingleft {
+  text-align: left !important;
+}
