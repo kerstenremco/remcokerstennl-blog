@@ -31,7 +31,7 @@ export default function PostsFilter({ tags, posts }) {
         ))}
       </div>
       {visablePosts.map((post) => (
-        <CardExtended {...post} />
+        <CardExtended {...post} client:load />
       ))}
     </>
   );
