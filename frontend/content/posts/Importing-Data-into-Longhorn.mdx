@@ -30,24 +30,24 @@ First, we need to export the data from the existing container.
   Use `docker exec` to open a shell in the container you want to export data from:
 
 ```shell
-sudo docker exec - it gitea / bin / sh
+sudo docker exec -it gitea /bin/sh
 ```
 
 * Archive (Tar) the Data\
   Navigate to the directory where your data is stored and compress it into a tarball for easy copying:
 
 ```shell
-/ # cd /data/
-/data # ls
+cd /data/
+ls
 git           gitea         ssh
-/data # tar -czf gitea.tar.gz .
+tar -czf gitea.tar.gz .
 ```
 
-* Copy the Tarball from the Container to Your Host\
+* Copy the Tarball from the Container to your host\
   Exit the shell and use `docker cp` to copy the tarball to your host:
 
 ```shell
-sudo docker cp gitea:/data/gitea.tar.gz .
+docker cp gitea:/data/gitea.tar.gz .
 Successfully copied 10.3MB to /home/remco/.
 ```
 
@@ -66,7 +66,7 @@ There are different ways to create a volume in Longhorn. For simplicity, we'll u
 * After creating the PVC via the Longhorn UI, you can verify its existence in the desired Kubernetes namespace:
 
 ```shell
-$ kubectl get pvc -n gitea
+kubectl get pvc -n gitea
 NAME         STATUS   VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS      AGE
 gitea-data   Bound    gitea-data   10Gi       RWO            longhorn-static   22s
 ```
@@ -129,32 +129,21 @@ Now that the pod is running, we can proceed with copying the data.
 * Use the `kubectl cp` command to copy the tar file into the **busybox** pod, specifically to the **/data** directory:
 
 ```shell
-$ kubectl cp - n gitea./ gitea.tar.gz busybox: /data/
+kubectl cp -n gitea ./gitea.tar.gz busybox:/data/
 ```
 
-* Extract the Tar File in the Pod\
-  Next, we’ll open a shell in the busybox pod and extract the tar file:
+* Open a shell in the busybox pod and extract the Tar File
 
 ```shell
-kubectl exec - n gitea--stdin--tty busybox-- / bin / sh
-/ # cd / data
-/ data # ls
-gitea.tar.gz  lost + found
-/ data # tar - xzf gitea.tar.gz
-/ data # ls
-git           gitea         gitea.tar.gz  lost + found  ssh
+kubectl exec -n gitea --stdin --tty busybox -- /bin/sh
+cd /data
+tar -xzf gitea.tar.gz
 
-```
-
-* After verifying the data is extracted correctly, you can remove the tar file to clean up:
-
-```shell
-$ kubectl delete -f busybox.yaml - n gitea
 ```
 
 ## Step 5: Clean Up
 
-* Once the data is successfully imported, delete the busybox pod to free up resources. If you used the provided YAML file, simply run:
+* Once the data is successfully imported, delete the Tar file and delete the busybox pod to free up resources. If you used the provided YAML file, simply run:
 
 ```shell
 $ kubectl delete -f busybox.yaml - n gitea
