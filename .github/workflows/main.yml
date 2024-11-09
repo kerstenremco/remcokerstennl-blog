@@ -18,9 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
       - name: Setup NodeJS environment
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 18
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Install NPM dependencies
         working-directory: ./frontend
         run: npm install
