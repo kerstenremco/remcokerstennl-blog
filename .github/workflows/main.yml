@@ -25,19 +25,19 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
-      - name: Install NPM dependencies
+      - name: Install PNPM dependencies
         working-directory: ./frontend
-        run: npm install
+        run: pnpm install
       - name: Start TinaCMS
         working-directory: ./frontend
-        run: npm run tina &
+        run: pnpm run tina &
       - name: Sleep for 10 seconds so TinaCMS can start
         uses: jakejarvis/wait-action@master
         with:
           time: "10s"
       - name: Compile
         working-directory: ./frontend
-        run: npm run build
+        run: pnpm run build
       - name: Remove Tina Admin folder
         working-directory: ./frontend/dist
         run: rm -rf admin
