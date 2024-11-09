@@ -35,7 +35,7 @@ jobs:
         working-directory: ./frontend
         run: npm run build
       - name: Remove Tina Admin folder
-        working-directory: ./frontend
+        working-directory: ./frontend/dist
         run: rm -rf admin
       - name: Deploy to S3 testbucket
         if: github.event.inputs.env == 'dev'
