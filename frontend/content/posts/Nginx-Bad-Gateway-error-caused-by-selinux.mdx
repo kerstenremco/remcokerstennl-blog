@@ -1,0 +1,73 @@
+---
+title: 'Troubleshooting SELinux: Resolving Nginx Reverse Proxy Issues'
+subtitle: How to Diagnose and Fix SELinux Blocking Nginx Connections
+customslug: troubleshooting-selinuxresolving-nginx-reverse-proxy-isues
+snippet: Troubleshoot and resolve SELinux blocking Nginx reverse proxy connections
+image: /images/tumbnails/nginx-502.png
+written: 2024-11-15T23:00:00.000Z
+seo_keywords: >-
+  SELinux troubleshooting, Nginx reverse proxy, SELinux blocking ports, custom
+  ports Nginx, RHEL9 Nginx setup, 502 bad gateway, SELinux
+  httpd_can_network_connect, Nginx permission denied error, audit2allow usage,
+  SELinux exceptions, fixing Nginx SELinux issues, reverse proxy SELinux
+tags:
+  - tag: content/tags/linux.md
+  - tag: content/tags/networking.md
+---
+
+Recently, I was setting up a new Nginx reverse proxy on a hardened RHEL9 server. While configuring proxies for the standard ports (80 and 443) went smoothly, I ran into an unusual issue when trying to set up a reverse proxy to a backend service running on port 30080. After a lot of debugging, I discovered the root cause: SELinux.
+
+# Troubleshooting Steps
+
+* Check the Nginx error logs
+
+Start by inspecting the error logs to understand why Nginx is failing. Use the following command:
+
+```shell
+tail -f /var/log/nginx /error.log
+```
+
+In my case, this was the error message:
+
+```shell
+2024/11/16 10: 31: 11[crit] 155243#155243: * 24 connect() to 10.33.33.33: 30080 failed(13: Permission denied) while connecting to upstream, client: 10.59.1.10, server: xxx, request: "GET / HTTP/2.0", upstream: "http://10.33.33.33:30080/", host: "xxx"
+
+```
+
+* Check if SELinux is blocking the request
+
+The error mentions "permission denied," which could indicate that SELinux is blocking the connection. To confirm, use the following command:
+
+```shell
+audit2allow -w -a
+```
+
+(Alternatively, you can inspect the logs directly with tail -f /var/log/audit/audit.log.)
+
+```shell
+audit2allow -w -a
+
+type=AVC msg=audit(1731771071.154:1804): avc:  denied  { name_connect } for  pid=155243 comm="nginx" dest=30080 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:unreserved_port_t:s0 tclass=tcp_socket permissive=0
+	Was caused by:
+	One of the following booleans was set incorrectly.
+	Description:
+	Allow httpd to can network connect
+
+	Allow access by executing:
+	# setsebool -P httpd_can_network_connect 1
+	Description:
+	Allow nis to enabled
+
+	Allow access by executing:
+	# setsebool -P nis_enabled 1
+```
+
+* Apply the suggested SELinux changes
+
+Based on the output, execute the appropriate command(s) to allow Nginx to make network connections:
+
+```javascript
+setsebool -P httpd_can_network_connect 1
+```
+
+After running the command, Nginx could successfully connect to the backend service on port 30080.
