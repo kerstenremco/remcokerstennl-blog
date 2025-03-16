@@ -11,24 +11,24 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/react": "^4.2.0",
+    "@astrojs/react": "^4.2.1",
     "@astrojs/tailwind": "^6.0.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "astro": "^5.2.5",
+    "astro": "^5.5.2",
     "boxicons": "^2.1.4",
-    "daisyui": "^4.12.23",
-    "fslightbox": "^3.4.2",
+    "daisyui": "^4.12.24",
+    "fslightbox": "^3.5.1",
     "highlight.js": "^11.11.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.17",
     "theme-change": "^2.5.0",
-    "tinacms": "^2.6.3",
-    "typescript": "^5.7.3"
+    "tinacms": "^2.7.2",
+    "typescript": "^5.8.2"
   },
   "devDependencies": {
-    "@tinacms/cli": "^1.8.3"
+    "@tinacms/cli": "^1.9.2"
   },
   "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }
