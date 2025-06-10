@@ -1,5 +1,0 @@
----
-title: Certification
-color: secondary
----
-

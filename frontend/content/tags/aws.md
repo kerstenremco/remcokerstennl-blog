@@ -1,5 +1,0 @@
----
-title: AWS
-color: primary
----
-

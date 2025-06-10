@@ -1,5 +1,0 @@
----
-title: Kubernetes
-color: accent
----
-

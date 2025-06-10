@@ -1,5 +1,5 @@
 ---
-title: M365
+title: Cloud
 color: info
 ---
 

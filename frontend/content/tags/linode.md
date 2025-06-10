@@ -1,5 +1,0 @@
----
-title: Linode
-color: success
----
-
