@@ -57,9 +57,13 @@ const h2headers = Astro.props.body.children.filter((el) => el.type === "h2").map
   import javascript from "highlight.js/lib/languages/javascript";
   import shell from "highlight.js/lib/languages/shell";
   import yaml from "highlight.js/lib/languages/yaml";
+  import python from "highlight.js/lib/languages/python";
+  import xml from "highlight.js/lib/languages/xml";
   hljs.registerLanguage("javascript", javascript);
   hljs.registerLanguage("shell", shell);
   hljs.registerLanguage("yaml", yaml);
+  hljs.registerLanguage("python", python);
+  hljs.registerLanguage("xml", xml);
   document.addEventListener("DOMContentLoaded", (event) => {
     hljs.highlightAll();
   });

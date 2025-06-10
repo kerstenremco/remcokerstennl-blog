@@ -1,0 +1,163 @@
+---
+title: Building a Simple SOC/SIEM at Home Using Open Source Tools
+subtitle: 'How I Built a Home SOC Using Wazuh, MISP, Cortex & Shuffle – Open Source'
+customslug: opensource-soc-siem
+snippet: 'How I Built a Home SOC Using Wazuh, MISP, Cortex & Shuffle – Open Source'
+image: /images/tumbnails/socsiemwazuh.png
+written: 2025-06-09T22:00:00.000Z
+seo_keywords: >-
+  home soc, open source siem, wazuh setup, misp integration, cortex analyzer,
+  shuffle automation, fortigate logging, threat intelligence platform, ioc
+  enrichment, siem homelab
+tags:
+  - tag: content/tags/security.md
+---
+
+These days, security becomes more critical by the hour. While there’s no shortage of security products out there, many come with a hefty price tag.
+
+At the same time, open source is becoming increasingly important—especially when it comes to digital sovereignty. So, I decided to put this to the test and build a simple SOC/SIEM stack at home using only open-source tools.
+
+Here’s what the stack consists of:
+
+1. **Wazuh** – SIEM platform
+2. **MISP** – Threat intelligence platform
+3. **Cortex** – SOAR tool focused on analyzing IOCs across various sources
+4. **Shuffle** – SOAR automation platform
+
+For this setup, I wanted to analyze outbound traffic from my Fortigate firewall. The data flow looks like this:
+
+1. MISP collects IOCs from various sources
+2. Wazuh imports those IOCs into its internal database
+3. Every outbound connection from the Fortigate is logged to Wazuh
+4. If there’s a match with a known IOC, Wazuh forwards the alert to Shuffle
+5. Shuffle queries Cortex to determine if it's a true positive
+6. Finally, I get a notification on Discord
+
+Here’s a quick diagram of the setup:
+
+![](/images/post-images/socsiemlab/wazuhpost.png)
+
+Curious how I put it all together? Let’s dive in.
+
+## MISP – Threat Feeds
+
+In MISP, I enabled several feeds including CIRCL, Botvrij, and Abuse.ch. These feeds pull in events with IOCs:
+
+![](/images/post-images/socsiemlab/misp-events.png)
+
+## Wazuh CDB – Importing IOCs
+
+To keep things performant, I decided to periodically import IOCs from MISP events into a Wazuh CDB list. I wrote a small Python script to extract IPs from MISP and write them to `/var/ossec/etc/lists`.
+
+```python
+#!/usr/bin/python3
+
+from pymisp import ExpandedPyMISP
+import re
+import os
+
+MISP_URL = 'https://misp.internal.remcokersten.nl'
+MISP_KEY = 'g7sUGCVyRNoVNBfBnVGTOYDAveztul9pemrRqI4r'
+VERIFY_CERT = False
+OUTPUT_FILE = '/var/ossec/etc/lists/misp_ips'
+
+print("Starting MISP IP import...")
+misp = ExpandedPyMISP(MISP_URL, MISP_KEY, VERIFY_CERT)
+result = misp.search(controller='attributes', type_attribute='ip-dst')
+
+print(
+    f"Found {len(result['Attribute'])} attributes in MISP, writing to {OUTPUT_FILE}...")
+with open(OUTPUT_FILE, 'w') as f:
+    pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
+    f.seek(0)
+    f.truncate()
+    for attr in result['Attribute']:
+        if re.match(pattern, attr['value']):
+            value = attr['value']
+            f.write(f'{value}:misp\n')
+
+print("Restarting Wazuh manager...")
+os.system("systemctl restart wazuh-manager")
+
+print("MISP IP import completed successfully.")
+
+```
+
+Once the list is updated, restarting the Wazuh manager triggers the creation of a new lookup database.
+
+![](/images/post-images/socsiemlab/wazug-ips.png)
+
+## Forwarding Fortigate Logs to Wazuh
+
+To get syslog data from Fortigate into Wazuh, I added the following configuration in the Wazuh manager:
+
+![](/images/post-images/socsiemlab/wazusyslog.png)
+
+```xml
+<remote>
+  <connection>syslog</connection>
+  <port>514</port>
+  <protocol>udp</protocol>
+  <allowed-ips>10.59.0.0/16</allowed-ips>
+</remote>
+```
+
+Then, I configured my Fortigate to send logs to the Wazuh manager:
+
+![](</images/post-images/socsiemlab/fortigate syslog.png>)
+
+Wazuh comes with built-in decoders for Fortigate logs, which worked well out of the box. For traffic events, the rule with ID **81618** was triggered.
+
+I added a custom rule to match outbound traffic where the destination IP appears in the CDB list. If there’s a hit, Wazuh triggers a new alert with ID **100010**:
+
+![](/images/post-images/socsiemlab/wazuhfortigaterule.png)
+
+```xml
+<rule id="100010" level="12">
+  <if_sid>81618</if_sid>
+  <list field="dstip" lookup="address_match_key">etc/lists/misp_ips</list>
+  <description>Outgoing traffic seen on Fortigate to known bad IP</description>
+</rule>
+```
+
+![](/images/post-images/socsiemlab/wazuhalerts.png)
+
+## Cortex – IOC Enrichment
+
+In Cortex, I enabled the AbuseIPDB analyzer. Of course, Cortex is most useful when combining multiple analyzers, but for this proof-of-concept, one is enough to demonstrate the workflow.
+
+![](/images/post-images/socsiemlab/cortex.png)
+
+## Shuffle – Automation Workflow
+
+I created a Shuffle workflow triggered by a webhook. The steps look like this:
+
+1. **IP Lookup** - The destination IP is passed to Cortex, which checks the AbuseIPDB analyzer for enrichment.
+2. **Wait & Fetch Result** - Since Cortex may take a few seconds to respond, the workflow waits 10 seconds before checking the result.
+3. **Query MISP (if needed)** - If the IP is flagged as malicious, Shuffle checks MISP to see which event it came from.
+4. **Discord Notification** - A message is sent to Discord with the details.
+
+![](/images/post-images/socsiemlab/cortexshuffler.png)
+
+## Wazuh Integration with Shuffle
+
+To trigger the Shuffle workflow when a Wazuh rule hits, I added the following integration config to Wazuh:
+
+![](/images/post-images/socsiemlab/wazuhshufflerint.png)
+
+```xml
+<integration>
+  <name>shuffle</name>
+  <hook_url>https://shuffle.internal.remcokersten.nl/api/v1/hooks/webhook_9195d1d8-43d5-4090-b080-4c3f57a01242</hook_url>
+  <rule_id>100010</rule_id>
+  <alert_format>json</alert_format>
+</integration>
+```
+
+![](/images/post-images/socsiemlab/discordshuffler.png)
+
+## Final Thoughts
+
+With just a few open-source tools, it’s entirely possible to build a functional SOC/SIEM environment at home. While this setup is still a work in progress, it already provides valuable insights and hands-on experience in threat detection and response.
+
+This kind of stack is ideal for learning, experimenting, and developing a deeper understanding of security operations—all without breaking the bank.
