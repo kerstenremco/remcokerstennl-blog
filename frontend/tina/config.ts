@@ -13,6 +13,43 @@ export default defineConfig({
   schema: {
     collections: [
       {
+        name: "badges",
+        label: "Badges",
+        path: "content/badges",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "string",
+            required: true,
+          },
+          {
+            name: "image",
+            label: "Image",
+            type: "image",
+            required: true,
+          },
+          {
+            name: "link",
+            label: "Link",
+            type: "string",
+            required: true,
+          },
+          {
+            name: "date",
+            label: "Date",
+            type: "datetime",
+            required: true,
+          },
+          {
+            name: "index",
+            label: "Index",
+            type: "number",
+            required: true,
+          },
+        ],
+      },
+      {
         name: "tags",
         label: "Tags",
         path: "content/tags",
@@ -27,7 +64,17 @@ export default defineConfig({
             name: "color",
             label: "Color",
             type: "string",
-            options: ["neutral", "primary", "secondary", "accent", "ghost", "info", "warning", "error", "success"],
+            options: [
+              "neutral",
+              "primary",
+              "secondary",
+              "accent",
+              "ghost",
+              "info",
+              "warning",
+              "error",
+              "success",
+            ],
           },
         ],
       },
