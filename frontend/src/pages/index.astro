@@ -21,7 +21,7 @@ const badges = await getBadges();
 			<div class="flex gap-2">
 				{badges?.map((badge) => (
 				<a href={badge.link} target="_blank">
-					<div class="tooltip tooltip-bottom" data-tip={badge.title!}>
+					<div class="tooltip tooltip-bottom md:inline-block hidden" data-tip={badge.title!}>
 					<Image
 						src={badge.image!}
 						alt={badge.title!}
@@ -29,6 +29,13 @@ const badges = await getBadges();
 						height={100}
 					/>
 					</div>
+					<Image
+						src={badge.image!}
+						alt={badge.title!}
+						width={100}
+						height={100}
+						class="inline-block md:hidden"
+					/>
 				</a>
 			))}
 			</div>
