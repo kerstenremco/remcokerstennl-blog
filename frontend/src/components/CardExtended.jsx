@@ -20,7 +20,7 @@ export default function CardExtended({
       </figure>
       <div className="card-body">
         {special && <SpecialBadge>{special}</SpecialBadge>}
-        <a href={`/posts/${slug}`} className="link link-hover">
+        <a href={`/posts/${slug}/`} className="link link-hover">
           <Header3 extraClasses="card-title">{title}</Header3>
           <p>{snippet}</p>
         </a>

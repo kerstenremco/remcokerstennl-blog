@@ -9,7 +9,7 @@ const posts = await getPosts();
 const badges = await getBadges();
 ---
 
-<Base title="Remco Kersten">
+<Base title="Remco Kerstennn" canonical="https://www.remcokersten.nl/">
 	<div class="flex flex-col-reverse items-center gap-8 xl:flex-row xl:gap-x-40">
 		<div>
 			<Header1 extraClasses="text-center xl:text-left"
@@ -20,8 +20,7 @@ const badges = await getBadges();
 			</p>
 			<div class="flex gap-2">
 				{badges?.map((badge) => (
-				<a href={badge.link} target="_blank">
-					Test
+				<a href={badge.link} target="_blank" rel="noopener">
 					<div class="tooltip tooltip-bottom md:inline-block hidden" data-tip={badge.title!}>
 					<Image
 						src={badge.image!}

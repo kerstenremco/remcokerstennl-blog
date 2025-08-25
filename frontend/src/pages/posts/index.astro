@@ -8,7 +8,7 @@ const tags = await getTags();
 const posts = await getPosts();
 ---
 
-<Base title="Remco Kersten - All posts">
+<Base title="Remco Kersten - All posts" canonical="https://www.remcokersten.nl/posts/">
 	<Header1 extraClasses="text-center md:mt-24">All posts</Header1>
 	<div class="flex flex-col gap-10">
 		<PostsFilter client:load tags={tags} posts={posts} />

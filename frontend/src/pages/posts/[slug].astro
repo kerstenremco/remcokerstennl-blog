@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 const h2headers = Astro.props.body.children.filter((el) => el.type === "h2").map((el) => el.children[0].text);
 ---
 
-<Base title=`Remco Kersten - ${Astro.props.title}` seoDesc={Astro.props.snippet} seoKeywords={Astro.props.seoKeyWords} image={Astro.props.image}>
+<Base title=`Remco Kersten - ${Astro.props.title}` seoDesc={Astro.props.snippet} seoKeywords={Astro.props.seoKeyWords} image={Astro.props.image} canonical={`https://www.remcokersten.nl/posts/${Astro.props.slug}/`}>
   <div class="xl:flex xl:flex-row xl:gap-12">
     <div class="xl:basis-1/4 xl:flex-none max-xl:sticky max-xl:top-0 z-50">
       <Stepper headers={h2headers} />

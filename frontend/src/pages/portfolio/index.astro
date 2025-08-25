@@ -6,7 +6,7 @@ import getPortfolio from "../../helpers/getPortfolio";
 const portfolio = await getPortfolio();
 ---
 
-<Base title="Remco Kersten - Portfolio">
+<Base title="Remco Kersten - Portfolio" canonical="https://www.remcokersten.nl/portfolio/">
 	<Header1 extraClasses="text-center md:mt-24">My Portfolio</Header1>
 	<div class="flex flex-col gap-10">
 		{portfolio.map((item) => (

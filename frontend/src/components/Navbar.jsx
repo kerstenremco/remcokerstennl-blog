@@ -10,7 +10,7 @@ export default function NavBar(props) {
         <div class="flex-none">
           <ul class="menu menu-horizontal px-1">
             <li className="max-xl:hidden">
-              <a href="/posts">
+              <a href="/posts/">
                 <box-icon
                   type="solid"
                   name="news"
@@ -20,7 +20,7 @@ export default function NavBar(props) {
               </a>
             </li>
             <li className="max-xl:hidden">
-              <a href="/portfolio">
+              <a href="/portfolio/">
                 <box-icon
                   name="photo-album"
                   type="solid"
@@ -67,7 +67,7 @@ export default function NavBar(props) {
             ></box-icon>
           </button>
         </a>
-        <a href="/posts">
+        <a href="/posts/">
           <button>
             <box-icon
               type="solid"
@@ -76,7 +76,7 @@ export default function NavBar(props) {
             ></box-icon>
           </button>
         </a>
-        <a href="/portfolio">
+        <a href="/portfolio/">
           <button>
             <box-icon
               type="solid"
