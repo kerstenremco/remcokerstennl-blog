@@ -180,6 +180,92 @@ export default defineConfig({
           },
         ],
       },
+      {
+        name: "portfoliotags",
+        label: "Portfolio Tags",
+        path: "content/portfoliotags",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "string",
+            required: true,
+          },
+          {
+            name: "color",
+            label: "Color",
+            type: "string",
+            options: [
+              "neutral",
+              "primary",
+              "secondary",
+              "accent",
+              "ghost",
+              "info",
+              "warning",
+              "error",
+              "success",
+            ],
+          },
+        ],
+      },
+      {
+        name: "portfolioitems",
+        label: "Portfolio items",
+        path: "content/portfolioitems",
+        format: "mdx",
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Title",
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: "image",
+            name: "image",
+            label: "Image",
+            required: true,
+          },
+          {
+            type: "object",
+            list: true,
+            name: "tags",
+            label: "tags",
+            fields: [
+              {
+                type: "reference",
+                label: "Tag",
+                name: "tag",
+                collections: ["portfoliotags"],
+              },
+            ],
+          },
+          {
+            type: "string",
+            name: "github",
+            label: "GitHub Link",
+          },
+          {
+            type: "string",
+            name: "demo",
+            label: "Demo Link",
+          },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Body",
+            isBody: true,
+          },
+          {
+            type: "number",
+            name: "order",
+            label: "Order",
+            required: true,
+          },
+        ],
+      },
     ],
   },
 });

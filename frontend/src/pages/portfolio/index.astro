@@ -1,0 +1,16 @@
+---
+import Base from "../../layout/base.astro";
+import { Header1 } from "../../components/styles/typo";
+import { PortfolioExtended } from "../../components/";
+import getPortfolio from "../../helpers/getPortfolio";
+const portfolio = await getPortfolio();
+---
+
+<Base title="Remco Kersten - Portfolio">
+	<Header1 extraClasses="text-center md:mt-24">My Portfolio</Header1>
+	<div class="flex flex-col gap-10">
+		{portfolio.map((item) => (
+        <PortfolioExtended {...item} client:load />
+      ))}
+	</div>
+</Base>

@@ -21,6 +21,7 @@ const badges = await getBadges();
 			<div class="flex gap-2">
 				{badges?.map((badge) => (
 				<a href={badge.link} target="_blank">
+					Test
 					<div class="tooltip tooltip-bottom md:inline-block hidden" data-tip={badge.title!}>
 					<Image
 						src={badge.image!}
@@ -50,7 +51,7 @@ const badges = await getBadges();
 	</div>
 	<Header2 extraClasses="text-center mt-24">Recents posts</Header2>
 	<div class="flex flex-col gap-10">
-		{posts?.map((post) => (
+		{posts?.slice(0, 5).map((post) => (
 			<CardExtended {...post} client:load  />
 		  ))}
 	</div>

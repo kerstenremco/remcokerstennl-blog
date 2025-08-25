@@ -16,9 +16,7 @@ export default function CardExtended({
         className="md:w-1/4 max-md:max-h-52 flex-none"
         onClick={() => (window.location.href = `/posts/${slug}`)}
       >
-        {/* <a href={`/posts/${slug}`} className="link link-hover"> */}
         <img src={image} alt="Movie" className="w-full" />
-        {/* </a> */}
       </figure>
       <div className="card-body">
         {special && <SpecialBadge>{special}</SpecialBadge>}

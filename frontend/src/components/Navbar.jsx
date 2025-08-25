@@ -12,11 +12,21 @@ export default function NavBar(props) {
             <li className="max-xl:hidden">
               <a href="/posts">
                 <box-icon
-                  name="category"
                   type="solid"
+                  name="news"
                   class="fill-base-content"
                 ></box-icon>
                 Posts
+              </a>
+            </li>
+            <li className="max-xl:hidden">
+              <a href="/portfolio">
+                <box-icon
+                  name="photo-album"
+                  type="solid"
+                  class="fill-base-content"
+                ></box-icon>
+                Portfolio
               </a>
             </li>
 
@@ -61,7 +71,16 @@ export default function NavBar(props) {
           <button>
             <box-icon
               type="solid"
-              name="category"
+              name="news"
+              class="fill-base-content block"
+            ></box-icon>
+          </button>
+        </a>
+        <a href="/portfolio">
+          <button>
+            <box-icon
+              type="solid"
+              name="photo-album"
               class="fill-base-content block"
             ></box-icon>
           </button>
