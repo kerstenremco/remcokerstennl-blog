@@ -7,9 +7,11 @@ import getPosts from "../helpers/getPosts";
 import getBadges from "../helpers/getBadges";
 const posts = await getPosts();
 const badges = await getBadges();
+const description = "Explore the digital garden of Remco Kersten — IT enthusiast sharing insights on networking, security, and DevOps. Discover tutorials, guides, and experiences from real-world engineering to help you learn and grow."
+const seoKeywords = "Remco Kersten, IT blog, Networking, Security, DevOps, Digital Garden, Tutorials, Guides, Engineering, Tech Insights"
 ---
 
-<Base title="Remco Kerstennn" canonical="https://www.remcokersten.nl/">
+<Base title="Remco Kersten" canonical="https://www.remcokersten.nl/" seoDesc={description} seoKeywords={seoKeywords}>
 	<div class="flex flex-col-reverse items-center gap-8 xl:flex-row xl:gap-x-40">
 		<div>
 			<Header1 extraClasses="text-center xl:text-left"
