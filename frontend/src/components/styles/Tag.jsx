@@ -3,7 +3,9 @@ export default function Tag({ tag, color, onClick, active }) {
     <div
       key={tag}
       onClick={onClick}
-      className={`badge badge-xl badge-${color} ${active ? "" : "badge-outline"} ${active || !onClick ? "cursor-default" : "cursor-copy"} select-none`}
+      className={`badge badge-md badge-${color} ${
+        active ? "" : "badge-outline"
+      } ${active || !onClick ? "cursor-default" : "cursor-copy"} select-none`}
     >
       {active && (
         <svg
@@ -12,7 +14,12 @@ export default function Tag({ tag, color, onClick, active }) {
           viewBox="0 0 24 24"
           className="inline-block w-4 h-4 stroke-current"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
         </svg>
       )}
       {tag}

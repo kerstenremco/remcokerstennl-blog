@@ -1,3 +1,9 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: emerald --default, dracula --prefersdark;
+}
+@source inline("badge{-primary,-secondary,-info,-accent,-success,-warning,-error,-xs,-sm,-md,-lg,-xl,-outline}");
+@source inline("alert{-primary,-secondary,-info,-accent,-success,-warning,-error,-xs,-sm,-md,-lg,-xl,-outline}");
 html {
   font-family: "DM Sans", sans-serif;
 }
