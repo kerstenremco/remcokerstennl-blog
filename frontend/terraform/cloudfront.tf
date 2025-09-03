@@ -41,6 +41,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+    response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
      function_association {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.redirect_old_to_new_blog.arn
