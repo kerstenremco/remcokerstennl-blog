@@ -28,7 +28,7 @@ Resources:
       Architectures:
         - x86_64
       MemorySize: 128
-      Timeout: 10
+      Timeout: 20
       Description: Get and put likes to posts
       Policies:
         - DynamoDBCrudPolicy:
@@ -59,7 +59,7 @@ Resources:
       Architectures:
         - x86_64
       MemorySize: 128
-      Timeout: 10
+      Timeout: 20
       Description: Contact handler
       Policies:
         - SESCrudPolicy:

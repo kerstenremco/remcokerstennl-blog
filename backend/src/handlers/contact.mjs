@@ -9,13 +9,9 @@ export const index = async (event) => {
     const name = body.name;
     const email = body.email;
     const message = body.message;
-    const toMailQuery = await ssm.send(
-      new GetParameterCommand({ Name: "/remcokerstennl/tomail" })
-    );
+    const toMailQuery = await ssm.send(new GetParameterCommand({ Name: "/remcokerstennl/tomail" }));
     const toMail = toMailQuery.Parameter["Value"];
-    const fromMailQuery = await ssm.send(
-      new GetParameterCommand({ Name: "/remcokerstennl/frommail" })
-    );
+    const fromMailQuery = await ssm.send(new GetParameterCommand({ Name: "/remcokerstennl/frommail" }));
     const fromMail = fromMailQuery.Parameter["Value"];
     if (!name || !email || !message) throw new Error("");
     await ses.send(
@@ -47,5 +43,3 @@ export const index = async (event) => {
     return { statusCode: 500 };
   }
 };
-
-// getById({ pathParameters: { slug: "3" } });

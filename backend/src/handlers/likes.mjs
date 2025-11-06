@@ -1,9 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocumentClient,
-  GetCommand,
-  UpdateCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 const client = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 
@@ -29,7 +25,7 @@ export const index = async (event) => {
       response.body.likes = 0;
     }
 
-    const r = {
+    return {
       statusCode: response.statusCode,
       headers: {
         "Access-Control-Allow-Headers": "X-Forwarded-For, Content-Type",
@@ -38,8 +34,6 @@ export const index = async (event) => {
       },
       body: JSON.stringify(response.body),
     };
-    // console.log(r);
-    return r;
   } else if (event.httpMethod == "PATCH") {
     const response = { statusCode: 200, body: { likes: 0 } };
     const id = `likes-${event.pathParameters.slug}`;
@@ -59,7 +53,7 @@ export const index = async (event) => {
       response.body.likes = 0;
     }
 
-    const r = {
+    return {
       statusCode: response.statusCode,
       headers: {
         "Access-Control-Allow-Headers": "X-Forwarded-For, Content-Type",
@@ -68,9 +62,5 @@ export const index = async (event) => {
       },
       body: JSON.stringify(response.body),
     };
-    // console.log(r);
-    return r;
   }
 };
-
-// getById({ pathParameters: { slug: "3" } });
