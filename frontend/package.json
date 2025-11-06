@@ -10,26 +10,26 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/react": "^4.3.0",
-    "@astrojs/sitemap": "^3.5.1",
-    "@tailwindcss/vite": "^4.1.12",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
-    "astro": "^5.13.5",
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.6.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "astro": "^5.15.4",
     "boxicons": "^2.1.4",
-    "daisyui": "^5.1.6",
+    "daisyui": "^5.4.5",
     "fslightbox": "^3.7.4",
     "highlight.js": "^11.11.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.12",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.17",
     "theme-change": "^2.5.0",
-    "tinacms": "^2.8.2",
-    "typescript": "^5.9.2"
+    "tinacms": "^2.9.1",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@tinacms/cli": "^1.10.2"
+    "@tinacms/cli": "^1.12.0"
   },
   "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }
